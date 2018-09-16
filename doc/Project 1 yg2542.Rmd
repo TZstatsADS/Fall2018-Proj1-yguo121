@@ -1,0 +1,25 @@
+---
+title: "Project 1"
+author: "Yaoqi Guo, yg2542"
+date: "9/16/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Load Library
+```{r}
+
+```
+
+
+## Read Data
+```{r}
+clean_dt <- read.csv("/Users/yaoqi/Google Drive/GitHub/Fall2018-Proj1-yguo121/data/cleaned_hm.csv")
+demo_dt <- read.csv("/Users/yaoqi/Google Drive/GitHub/Fall2018-Proj1-yguo121/data/demographic.csv")
+
+```
+
