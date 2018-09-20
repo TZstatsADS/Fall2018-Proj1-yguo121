@@ -13,7 +13,7 @@ HappyDB is a corpus of 100,000 crowd-sourced happy moments via Amazon's Mechanic
 packages.used=c("tidyverse", "tidytext", "DT", 
                 "gridExtra", "ngram", "shiny", "igraph", 
                 "rvest", "tibble", "qdap", 
-                "sentimentr", "gplots", "dplyr", "janeaustenr"
+                "sentimentr", "gplots", "dplyr", "janeaustenr",
                 "tm", "syuzhet", "factoextra", 
                 "beeswarm", "scales", "RColorBrewer",
                 "RANN", "tm", "topicmodels", "wordcloud2")
@@ -101,13 +101,26 @@ single_dt <- filter(moments_dt, marital=="single")
 bag_of_words_single <- single_dt %>%
   unnest_tokens(word, text)
 word_count_single <- bag_of_words_single %>%
-  count(word,sort = TRUE)
+  count(word, sort = TRUE)
 
-wordcloud_single <- wordcloud2(word_count_s,color='random-light',
-                               backgroundColor = 'dark',size = 2,
-                               minRotation = pi/2,maxRotation = pi/2,
-                               rotateRatio = 0.5))
+wordcloud_single <- wordcloud2(word_count_single, color='random-light',
+                               backgroundColor = "white", shape = "circle",
+                               minRotation = pi/2, maxRotation = pi/2,
+                               rotateRatio = 0.5)
 wordcloud_single
+
+# Save all words by single ppl in word_married
+married_dt <- filter(moments_dt, marital=="married")
+bag_of_words_married <- married_dt %>%
+  unnest_tokens(word, text)
+word_count_single <- bag_of_words_married %>%
+  count(word, sort = TRUE)
+
+wordcloud_married <- wordcloud2(word_count_married, color='random-light',
+                               backgroundColor = "white", shape = "circle",
+                               minRotation = pi/2, maxRotation = pi/2,
+                               rotateRatio = 0.5)
+wordcloud_married
 
 ```
 
