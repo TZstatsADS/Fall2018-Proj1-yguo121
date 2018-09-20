@@ -1,25 +1,115 @@
 ---
 title: "Project 1"
 author: "Yaoqi Guo, yg2542"
-date: "9/16/2018"
+date: "due 9/20/2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+HappyDB is a corpus of 100,000 crowd-sourced happy moments via Amazon's Mechanical Turk.
+
+
+## Step 0: check and install needed packages. Load the libraries and functions.
+```{r 0, message=FALSE, warning=FALSE}
+packages.used=c("tidyverse", "tidytext", "DT", 
+                "gridExtra", "ngram", "shiny", "igraph", 
+                "rvest", "tibble", "qdap", 
+                "sentimentr", "gplots", "dplyr", "janeaustenr"
+                "tm", "syuzhet", "factoextra", 
+                "beeswarm", "scales", "RColorBrewer",
+                "RANN", "tm", "topicmodels", "wordcloud2")
+
+# check packages that need to be installed.
+packages.needed=setdiff(packages.used, 
+                        intersect(installed.packages()[,1], 
+                                  packages.used))
+# install additional packages
+if(length(packages.needed)>0){
+  install.packages(packages.needed, dependencies = TRUE)
+}
+
+# load packages
+library("tidyverse")
+library("tidytext")
+library("DT")
+library("gridExtra")
+library("ngram")
+library("shiny") 
+library("igraph")
+
+library("rvest")
+library("tibble")
+library("qdap")
+library("sentimentr")
+library("gplots")
+library("dplyr")
+library("janeaustenr")
+library("tm")
+library("syuzhet")
+library("factoextra")
+library("beeswarm")
+library("scales")
+library("RColorBrewer")
+library("RANN")
+library("tm")
+library("topicmodels")
+library("wordcloud2")
 ```
 
+## Step 1: read and merge Datasets.
 
-## Load Library
-```{r}
-
-```
-
-
-## Read Data
-```{r}
-clean_dt <- read.csv("/Users/yaoqi/Google Drive/GitHub/Fall2018-Proj1-yguo121/data/cleaned_hm.csv")
+The cleaned dataset has insights of preliminary result while the demographic dataset provides personal information of the crowd in this sample survey. We merge the two dataset by people's `wid`.
+```{r 1}
+moments_dt <- read.csv("/Users/yaoqi/Google Drive/GitHub/Fall2018-Proj1-yguo121/data/processed_moments.csv")
 demo_dt <- read.csv("/Users/yaoqi/Google Drive/GitHub/Fall2018-Proj1-yguo121/data/demographic.csv")
 
+moments_dt <- moments_dt %>%
+  inner_join(demo_dt, by = "wid") %>%
+  select(wid,
+         original_hm,
+         num_sentence,
+         gender,
+         marital, 
+         parenthood,
+         reflection_period,
+         age, 
+         country, 
+         ground_truth_category, 
+         predicted_category,
+         text) 
+# %>%
+#   mutate(count = sapply(hm_data$text, wordcount)) %>%
+#   filter(gender %in% c("m", "f")) %>%
+#   filter(parenthood %in% c("n", "y")) %>%
+#   filter(reflection_period %in% c("24h", "3m")) %>%
+#   mutate(reflection_period = fct_recode(reflection_period,
+#                                         months_3 = "3m", hours_24 = "24h"))
 ```
+
+## Step 2: wordcloud
+
+We are interested in the most frequently used words (to describe happy moments) by single and married people, and by people of different age groups. Wordclouds are used to visualize these most frequent words, from which we hope to find important ones that make people of diffent groups happy.
+
+```{r 2}
+# Save all words in word_count
+# bag_of_words <- moments_dt %>% 
+#   unnest_tokens(word, text)
+# word_count <- bag_of_words %>%
+#   count(word, sort = TRUE)
+
+# Save all words by single ppl in word_single
+single_dt <- filter(moments_dt, marital=="single")
+bag_of_words_single <- single_dt %>%
+  unnest_tokens(word, text)
+word_count_single <- bag_of_words_single %>%
+  count(word,sort = TRUE)
+
+wordcloud_single <- wordcloud2(word_count_s,color='random-light',
+                               backgroundColor = 'dark',size = 2,
+                               minRotation = pi/2,maxRotation = pi/2,
+                               rotateRatio = 0.5))
+wordcloud_single
+
+```
+
+
 
